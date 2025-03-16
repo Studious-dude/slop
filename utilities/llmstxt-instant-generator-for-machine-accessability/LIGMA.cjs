@@ -26,6 +26,8 @@ const IGNORED_ITEMS = [
   'typescript',
   'utilities',
   'LICENSE',
+  'presentation_materials',
+  'Preseed_Fundraising_Plan_v1_March_2025.md'
 ];
 
 // file extensions to ignore
@@ -42,15 +44,15 @@ function processFileContent(content, filePath) {
 
   // Replace content inside <style>...</style> tags with ellipsis
   content = content.replace(/<style>[\s\S]*?<\/style>/gi, '<style>...</style>');
-  
+
   // Replace SVG content but preserve the tags
   content = content.replace(/<svg[\s\S]*?<\/svg>/gi, '<svg>...</svg>');
-  
+
   // Handle CSS files - replace content but keep structure
   if (filePath.toLowerCase().endsWith('.css')) {
     content = '/* CSS content simplified */\n';
   }
-  
+
   // Handle large JSON content (preserving structure but reducing size)
   if (filePath.toLowerCase().endsWith('.json')) {
     try {
@@ -63,7 +65,7 @@ function processFileContent(content, filePath) {
       // Not valid JSON or other error, keep original
     }
   }
-  
+
   return content;
 }
 
@@ -118,12 +120,12 @@ function processDirectory(srcDir, writeStream) {
 function combineFiles(srcDir, outputFile) {
   // Create a writable stream so that we don't create one huge string in memory.
   const writeStream = createWriteStream(outputFile, { encoding: 'utf-8' });
-  
+
   const directoryOutline = buildDirectoryOutline(srcDir);
   writeStream.write(`Directory Structure:\n${directoryOutline}\nFile Contents:\n`);
 
   processDirectory(srcDir, writeStream);
-  
+
   writeStream.end();
   writeStream.on('finish', () => {
     console.log('All files combined successfully into:', outputFile);
